@@ -1,4 +1,5 @@
-using System.Text.Json.Serialization;
+using FitBook.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddControllers();
+builder.Services.AddEntityFrameworkNpgsql()
+    .AddDbContext<ApiDbContext>(option => 
+        option.UseNpgsql(builder.Configuration.GetConnectionString("FitbookDbConnection")));
 
 var app = builder.Build();
 

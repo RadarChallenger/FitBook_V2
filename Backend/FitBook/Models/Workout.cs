@@ -2,13 +2,10 @@ namespace FitBook.Models;
 
 public class Workout
 {
-    public Workout()
-    {
-    }
-
-    public string Name;
-    private List<Exercise> Exercises;
-    private DateTime StartTime;
-    private DateTime Endtime;
-    private Guid WorkoutID;
+    public string Name { get; set; }
+    public DateTime StartTime { get; set; }
+    public DateTime Endtime { get; set; }
+    public Guid WorkoutID { get; set; }
+    public User User { get; set; }
+    public ICollection<Exercise> Exercises { get; set; }
 }
