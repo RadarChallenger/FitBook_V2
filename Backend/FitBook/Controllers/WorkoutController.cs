@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FitBook.Controllers;
 
+[Route("api/[controller]")]
+[ApiController]
 public class WorkoutController : ControllerBase
 {
     [HttpPost("CreateWorkout")]
