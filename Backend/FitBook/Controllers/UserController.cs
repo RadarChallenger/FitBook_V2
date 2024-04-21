@@ -1,4 +1,7 @@
+using AutoMapper;
+using FitBook.Dtos;
 using FitBook.Models;
+using FitBook.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FitBook.Controllers;
@@ -7,6 +10,15 @@ namespace FitBook.Controllers;
 [ApiController]
 public class UserController : ControllerBase
 {
+    private IUserService UserService;
+    private IMapper Mapper;
+
+    public UserController(IUserService userService, IMapper mapper)
+    {
+        UserService = userService;
+        Mapper = mapper;
+    }
+    
     [HttpPost("CreateUser")]
     public ActionResult CreateUser([FromBody] User newUser)
     {
@@ -40,5 +52,12 @@ public class UserController : ControllerBase
     {
         // Implement get user logic here
         throw new NotImplementedException();
+    }
+    
+    [HttpGet("GetUsers")]
+    public ActionResult<ICollection<User>> GetUsers()
+    {
+        var users = UserService.GetUsers();
+        return Ok(users.Select(user => Mapper.Map<UserDto>(user)));
     }
 }
