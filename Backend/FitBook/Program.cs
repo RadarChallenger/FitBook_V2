@@ -9,6 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IExerciseService, ExerciseService>();
+builder.Services.AddScoped<IWorkoutService, WorkoutService>();
+builder.Services.AddScoped<IWorkoutExerciseService, WorkoutExerciseService>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddControllers();

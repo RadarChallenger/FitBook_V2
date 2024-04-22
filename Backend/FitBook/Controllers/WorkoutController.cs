@@ -1,4 +1,6 @@
+using AutoMapper;
 using FitBook.Models;
+using FitBook.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FitBook.Controllers;
@@ -7,6 +9,17 @@ namespace FitBook.Controllers;
 [ApiController]
 public class WorkoutController : ControllerBase
 {
+    private readonly IWorkoutService WorkoutService;
+    private readonly IWorkoutExerciseService WorkoutExerciseService;
+    private readonly IMapper Mapper;
+
+    public WorkoutController(IWorkoutService workoutService, IWorkoutExerciseService workoutExerciseService, IMapper mapper)
+    {
+        WorkoutService = workoutService;
+        WorkoutExerciseService = workoutExerciseService;
+        Mapper = mapper;
+    }
+    
     [HttpPost("CreateWorkout")]
     public ActionResult CreateWorkout([FromBody] Workout newWorkout)
     {
