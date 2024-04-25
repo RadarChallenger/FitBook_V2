@@ -3,6 +3,7 @@ using System;
 using FitBook.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FitBook.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    partial class ApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240425014533_Workouts Foreign Key UserID")]
+    partial class WorkoutsForeignKeyUserID
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,7 +62,6 @@ namespace FitBook.Migrations
             modelBuilder.Entity("FitBook.Models.Workout", b =>
                 {
                     b.Property<Guid>("WorkoutID")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("Endtime")
@@ -76,8 +78,6 @@ namespace FitBook.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("WorkoutID");
-
-                    b.HasIndex("UserID");
 
                     b.ToTable("Workouts");
                 });
@@ -116,7 +116,7 @@ namespace FitBook.Migrations
                 {
                     b.HasOne("FitBook.Models.User", "User")
                         .WithMany("Workouts")
-                        .HasForeignKey("UserID")
+                        .HasForeignKey("WorkoutID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

@@ -1,4 +1,5 @@
 using AutoMapper;
+using FitBook.Dtos;
 using FitBook.Models;
 using FitBook.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -19,67 +20,63 @@ public class WorkoutController : ControllerBase
         WorkoutExerciseService = workoutExerciseService;
         Mapper = mapper;
     }
-    
-    [HttpPost("CreateWorkout")]
-    public ActionResult CreateWorkout([FromBody] Workout newWorkout)
-    {
-        // Implement create workout logic here
-        throw new NotImplementedException();
-    }
-    
-    [HttpGet("GetWorkout/{workoutId}")]
-    public ActionResult GetWorkout(Guid workoutId)
-    {
-        // Implement get workout logic here
-        throw new NotImplementedException();
-    }
 
-    [HttpGet("GetWorkouts")]
-    public ActionResult<IEnumerable<Workout>> GetWorkouts()
+    [HttpPost("CreateWorkout")]
+    public ActionResult CreateWorkout([FromQuery] Guid userID, [FromBody] CreateWorkoutDto newWorkout)
     {
-        // Implement get workouts logic here
-        throw new NotImplementedException();
+        var workoutID = Guid.NewGuid();
+        
+        var workout = Mapper.Map<Workout>(newWorkout);
+        workout.UserID = userID;
+        WorkoutService.CreateWorkout(workout, workoutID);
+        
+        var exercises = newWorkout.Exercises.Select(e => Mapper.Map<WorkoutExercise>(e));
+        
+        foreach (var workoutExercise in exercises)
+        {
+            workoutExercise.WorkoutID = workoutID;
+            WorkoutExerciseService.CreateWorkoutExercise(workoutExercise);
+        }
+        
+        return Ok();
     }
 
     [HttpDelete("DeleteWorkout/{workoutId}")]
     public ActionResult DeleteWorkout(Guid workoutId)
     {
-        // Implement delete workout logic here
-        throw new NotImplementedException();
+        var workoutExercises = WorkoutExerciseService.GetExercisesFromWorkout(workoutId);
+        workoutExercises.Select(we => WorkoutExerciseService.DeleteWorkoutExercise(we));
+
+        var workout = WorkoutService.GetWorkout(workoutId);
+        WorkoutService.DeleteWorkout(workout);
+        
+        return Ok();
     }
 
-    [HttpPost("StartWorkout/{workoutId}")]
-    public ActionResult StartWorkout(Guid workoutId)
+    [HttpGet("GetWorkout/{workoutId}")]
+    public ActionResult GetWorkout(Guid workoutId)
     {
-        // Implement start workout logic here
-        throw new NotImplementedException();
+        var workout = WorkoutService.GetWorkout(workoutId);
+        var workoutExercises = WorkoutExerciseService.GetExercisesFromWorkout(workoutId);
+        var exercisesDto = workoutExercises.Select(e => Mapper.Map<WorkoutExerciseDto>(e));
+        var workoutDto = Mapper.Map<ResponseWorkoutDto>(workout);
+        workoutDto.Exercises = exercisesDto;
+        return Ok(workoutDto);
     }
 
-    [HttpPost("EndWorkout/{workoutId}")]
-    public ActionResult EndWorkout(Guid workoutId)
+    [HttpGet("GetWorkouts")]
+    public ActionResult<IEnumerable<ResponseWorkoutDto>> GetWorkouts()
     {
-        // Implement end workout logic here
-        throw new NotImplementedException();
-    }
-
-    [HttpPost("CancelWorkout/{workoutId}")]
-    public ActionResult CancelWorkout(Guid workoutId)
-    {
-        // Implement cancel workout logic here
-        throw new NotImplementedException();
-    }
-
-    [HttpPost("ImportWorkout")]
-    public ActionResult ImportWorkout([FromBody] Workout importedWorkout)
-    {
-        // Implement import workout logic here
-        throw new NotImplementedException();
-    }
-
-    [HttpPost("ExportWorkout/{workoutId}")]
-    public ActionResult ExportWorkout(Guid workoutId)
-    {
-        // Implement export workout logic here
-        throw new NotImplementedException();
+        var result = new List<ResponseWorkoutDto>();
+        var workouts = WorkoutService.GetWorkouts();
+        foreach (var workout in workouts)
+        {
+            var workoutExercises = WorkoutExerciseService.GetExercisesFromWorkout(workout.WorkoutID);
+            var exercisesDto = workoutExercises.Select(e => Mapper.Map<WorkoutExerciseDto>(e));
+            var workoutDto = Mapper.Map<ResponseWorkoutDto>(workout);
+            workoutDto.Exercises = exercisesDto;
+            result.Add(workoutDto);
+        }
+        return Ok(result);
     }
 }

@@ -3,10 +3,8 @@ using FitBook.Models;
 
 namespace FitBook.Services;
 
-public class WorkoutService : IWorkoutService
+public class WorkoutService : BaseService, IWorkoutService
 {
-    private ApiDbContext Context;
-
     public WorkoutService(ApiDbContext context)
     {
         Context = context;
@@ -14,6 +12,30 @@ public class WorkoutService : IWorkoutService
 
     public ICollection<Workout> GetWorkouts()
     {
-        return new List<Workout>();
+        return Context.Workouts.ToList();
+    }
+
+    public Workout GetWorkout(Guid workoutID)
+    {
+        return Context.Workouts.FirstOrDefault(w => w.WorkoutID == workoutID);
+    }
+
+    public bool CreateWorkout(Workout newWorkout, Guid id)
+    {
+        newWorkout.WorkoutID = id;
+        Context.Add(newWorkout);
+        return Save();
+    }
+
+    public bool DeleteWorkout(Workout workout)
+    {
+        Context.Remove(workout);
+        return Save();
+    }
+
+    public bool UpdateWorkout(Workout workout)
+    {
+        Context.Update(workout);
+        return Save();
     }
 }

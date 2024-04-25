@@ -1,4 +1,5 @@
 using AutoMapper;
+using FitBook.Dtos;
 using FitBook.Models;
 using FitBook.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -7,51 +8,50 @@ namespace FitBook.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ExerciseController
+public class ExerciseController : ControllerBase
 {
     private readonly IExerciseService ExerciseService;
-    private readonly IWorkoutExerciseService WorkoutExerciseService;
     private readonly IMapper Mapper;
 
-    public ExerciseController(IExerciseService exerciseService, IWorkoutExerciseService workoutExerciseService, IMapper mapper)
+    public ExerciseController(IExerciseService exerciseService, IMapper mapper)
     {
         ExerciseService = exerciseService;
-        WorkoutExerciseService = workoutExerciseService;
         Mapper = mapper;
     }
     
     [HttpPost("CreateExercise")]
-    public ActionResult CreateExercise([FromBody] Exercise newExercise)
+    public ActionResult CreateExercise([FromBody] CreateExerciseDto newExercise)
     {
-        // Implement create exercise logic here
-        throw new NotImplementedException();
+        var exercise = Mapper.Map<Exercise>(newExercise);
+        if (ExerciseService.CreateExercise(exercise))
+        {
+            return Ok();
+        }
+        else
+        {
+            return BadRequest();
+        }
     }
 
     [HttpDelete("DeleteExercise/{exerciseId}")]
     public ActionResult DeleteExercise(Guid exerciseId)
     {
-        // Implement delete exercise logic here
-        throw new NotImplementedException();
-    }
-
-    [HttpPut("UpdateExercise")]
-    public ActionResult UpdateExercise([FromBody] Exercise updatedExercise)
-    {
-        // Implement update exercise logic here
-        throw new NotImplementedException();
+        var exercise = ExerciseService.GetExercise(exerciseId);
+        ExerciseService.DeleteExercise(exercise);
+        return Ok();
     }
 
     [HttpGet("GetExercise/{exerciseId}")]
     public ActionResult GetExercise(Guid exerciseId)
     {
-        // Implement get exercise by ID logic here
-        throw new NotImplementedException();
+        var exercise = ExerciseService.GetExercise(exerciseId);
+        return Ok(Mapper.Map<RepsonseExerciseDto>(exercise));
     }
 
     [HttpGet("GetExercises")]
-    public ActionResult<IEnumerable<Exercise>> GetExercises()
+    public ActionResult<IEnumerable<RepsonseExerciseDto>> GetExercises()
     {
-        // Implement get exercises logic here
-        throw new NotImplementedException();
+        var exercises = ExerciseService.GetExercises();
+        return Ok(exercises.Select(exercise => Mapper.Map<RepsonseExerciseDto>(exercise)));
     }
 }

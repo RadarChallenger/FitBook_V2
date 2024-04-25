@@ -20,44 +20,38 @@ public class UserController : ControllerBase
     }
     
     [HttpPost("CreateUser")]
-    public ActionResult CreateUser([FromBody] User newUser)
+    public ActionResult CreateUser([FromBody] CreateUserDto newUser)
     {
-        // Implement Create-user logic here
-        throw new NotImplementedException();
-    }
-
-    [HttpPost("UserSignIn")]
-    public ActionResult SignIn([FromBody] User loginUser)
-    {
-        // Implement sign-in logic here
-        throw new NotImplementedException();
-    }
-
-    [HttpPost("UserSignOut")]
-    public ActionResult UserSignOut()
-    {
-        // Implement sign-out logic here
-        throw new NotImplementedException();
+        var user = Mapper.Map<User>(newUser);
+        if (UserService.CreateUser(user))
+        {
+            return Ok();
+        }
+        else
+        {
+            return BadRequest();
+        }
     }
 
     [HttpDelete("DeleteUser/{userId}")]
     public ActionResult DeleteUser(Guid userId)
     {
-        // Implement delete user logic here
-        throw new NotImplementedException();
+        var user = UserService.GetUser(userId);
+        UserService.DeleteUser(user);
+        return Ok();
     }
 
     [HttpGet("GetUser/{userId}")]
     public ActionResult GetUser(Guid userId)
     {
-        // Implement get user logic here
-        throw new NotImplementedException();
+        var user = UserService.GetUser(userId);
+        return Ok(Mapper.Map<ResponseUserDto>(user));
     }
     
     [HttpGet("GetUsers")]
-    public ActionResult<ICollection<User>> GetUsers()
+    public ActionResult<ICollection<ResponseUserDto>> GetUsers()
     {
         var users = UserService.GetUsers();
-        return Ok(users.Select(user => Mapper.Map<UserDto>(user)));
+        return Ok(users.Select(user => Mapper.Map<ResponseUserDto>(user)));
     }
 }

@@ -4,5 +4,9 @@ namespace FitBook.Services;
 
 public interface IUserService
 {
-    public ICollection<User> GetUsers();
+    ICollection<User> GetUsers();
+    User GetUser(Guid userID);
+    bool CreateUser(User newUser);
+    bool DeleteUser(User user);
+    bool UpdateUser(User user);
 }

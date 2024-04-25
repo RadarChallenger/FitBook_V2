@@ -8,4 +8,6 @@ public class WorkoutExercise
     public int Weight { get; set; }
     public Guid ExerciseID { get; set; }
     public Guid WorkoutID { get; set; }
+    public Exercise Exercise { get; set; }
+    public Workout Workout { get; set; }
 }

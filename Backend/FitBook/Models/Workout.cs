@@ -6,6 +6,7 @@ public class Workout
     public DateTime StartTime { get; set; }
     public DateTime Endtime { get; set; }
     public Guid WorkoutID { get; set; }
+    public Guid UserID { get; set; }
     public User User { get; set; }
-    public ICollection<Exercise> Exercises { get; set; }
+    public ICollection<WorkoutExercise> WorkoutExercises { get; set; }
 }

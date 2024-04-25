@@ -8,6 +8,14 @@ public class MappingProfiles : Profile
 {
     public MappingProfiles()
     {
-        CreateMap<User, UserDto>();
+        CreateMap<User, ResponseUserDto>();
+        CreateMap<CreateUserDto, User>();
+        CreateMap<CreateExerciseDto, Exercise>();
+        CreateMap<Exercise, RepsonseExerciseDto>();
+        CreateMap<Exercise, ResponseUserDto>();
+        CreateMap<WorkoutExerciseDto, WorkoutExercise>();
+        CreateMap<WorkoutExercise, WorkoutExerciseDto>();
+        CreateMap<CreateWorkoutDto, Workout>();
+        CreateMap<Workout, ResponseWorkoutDto>();
     }
 }
