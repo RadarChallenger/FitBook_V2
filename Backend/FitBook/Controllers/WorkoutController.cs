@@ -82,4 +82,31 @@ public class WorkoutController : ControllerBase
         }
         return Ok(result);
     }
+
+    [HttpPost("FinishWorkout")]
+    public ActionResult FinishWorkout([FromQuery] Guid workoutId)
+    {
+        var workout = _workoutService.GetWorkout(workoutId);
+        workout.FinishWorkout = true;
+        _workoutService.UpdateWorkout(workout);
+
+        return Ok();
+    }
+
+    [HttpPost("AddExercisesToWorkout")]
+    public ActionResult AddExercisesToWorkout([FromQuery] Guid workoutId, [FromBody] IEnumerable<WorkoutExerciseDto> workoutExercises)
+    {
+        var workout = _workoutService.GetWorkout(workoutId);
+        workout.EndTime = DateTime.Now;
+        _workoutService.UpdateWorkout(workout);
+        
+        var exercises = workoutExercises.Select(we => _mapper.Map<WorkoutExercise>(we));
+        foreach (var exercise in exercises)
+        {
+            exercise.WorkoutId = workoutId;
+            _workoutExerciseService.CreateWorkoutExercise(exercise);
+        }
+
+        return Ok();
+    }
 }

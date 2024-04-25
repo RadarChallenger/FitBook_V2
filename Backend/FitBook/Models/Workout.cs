@@ -9,4 +9,5 @@ public class Workout
     public Guid UserId { get; set; }
     public User User { get; set; }
     public ICollection<WorkoutExercise> WorkoutExercises { get; set; }
+    public bool FinishWorkout { get; set; } = false;
 }
