@@ -22,22 +22,22 @@ public class ApiDbContext : DbContext
         {
             entity.HasOne(u => u.User)
                 .WithMany(u => u.Workouts)
-                .HasForeignKey(x => x.UserID)
+                .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
 
         modelBuilder.Entity<WorkoutExercise>()
             .HasOne(e => e.Exercise)
             .WithMany(we => we.WorkoutExercises)
-            .HasForeignKey(e => e.ExerciseID);
+            .HasForeignKey(e => e.ExerciseId);
         modelBuilder.Entity<WorkoutExercise>()
             .HasOne(w => w.Workout)
             .WithMany(we => we.WorkoutExercises)
-            .HasForeignKey(w => w.WorkoutID);
+            .HasForeignKey(w => w.WorkoutId);
 
-        modelBuilder.Entity<Exercise>().HasKey(e => e.ExerciseID);
-        modelBuilder.Entity<Workout>().HasKey(e => e.WorkoutID);
-        modelBuilder.Entity<User>().HasKey(e => e.UserID);
-        modelBuilder.Entity<WorkoutExercise>().HasKey(e => e.WorkoutExerciseID);
+        modelBuilder.Entity<Exercise>().HasKey(e => e.ExerciseId);
+        modelBuilder.Entity<Workout>().HasKey(e => e.WorkoutId);
+        modelBuilder.Entity<User>().HasKey(e => e.UserId);
+        modelBuilder.Entity<WorkoutExercise>().HasKey(e => e.WorkoutExerciseId);
     }
 }

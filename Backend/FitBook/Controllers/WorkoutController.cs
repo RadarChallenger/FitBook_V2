@@ -10,32 +10,32 @@ namespace FitBook.Controllers;
 [ApiController]
 public class WorkoutController : ControllerBase
 {
-    private readonly IWorkoutService WorkoutService;
-    private readonly IWorkoutExerciseService WorkoutExerciseService;
-    private readonly IMapper Mapper;
+    private readonly IWorkoutService _workoutService;
+    private readonly IWorkoutExerciseService _workoutExerciseService;
+    private readonly IMapper _mapper;
 
     public WorkoutController(IWorkoutService workoutService, IWorkoutExerciseService workoutExerciseService, IMapper mapper)
     {
-        WorkoutService = workoutService;
-        WorkoutExerciseService = workoutExerciseService;
-        Mapper = mapper;
+        _workoutService = workoutService;
+        _workoutExerciseService = workoutExerciseService;
+        _mapper = mapper;
     }
 
     [HttpPost("CreateWorkout")]
-    public ActionResult CreateWorkout([FromQuery] Guid userID, [FromBody] CreateWorkoutDto newWorkout)
+    public ActionResult CreateWorkout([FromQuery] Guid userId, [FromBody] CreateWorkoutDto newWorkout)
     {
-        var workoutID = Guid.NewGuid();
+        var workoutId = Guid.NewGuid();
         
-        var workout = Mapper.Map<Workout>(newWorkout);
-        workout.UserID = userID;
-        WorkoutService.CreateWorkout(workout, workoutID);
+        var workout = _mapper.Map<Workout>(newWorkout);
+        workout.UserId = userId;
+        _workoutService.CreateWorkout(workout, workoutId);
         
-        var exercises = newWorkout.Exercises.Select(e => Mapper.Map<WorkoutExercise>(e));
+        var exercises = newWorkout.Exercises.Select(e => _mapper.Map<WorkoutExercise>(e));
         
         foreach (var workoutExercise in exercises)
         {
-            workoutExercise.WorkoutID = workoutID;
-            WorkoutExerciseService.CreateWorkoutExercise(workoutExercise);
+            workoutExercise.WorkoutId = workoutId;
+            _workoutExerciseService.CreateWorkoutExercise(workoutExercise);
         }
         
         return Ok();
@@ -44,11 +44,14 @@ public class WorkoutController : ControllerBase
     [HttpDelete("DeleteWorkout/{workoutId}")]
     public ActionResult DeleteWorkout(Guid workoutId)
     {
-        var workoutExercises = WorkoutExerciseService.GetExercisesFromWorkout(workoutId);
-        workoutExercises.Select(we => WorkoutExerciseService.DeleteWorkoutExercise(we));
+        var workoutExercises = _workoutExerciseService.GetExercisesFromWorkout(workoutId);
+        foreach (var workoutExercise in workoutExercises)
+        {
+            _workoutExerciseService.DeleteWorkoutExercise(workoutExercise);
+        }
 
-        var workout = WorkoutService.GetWorkout(workoutId);
-        WorkoutService.DeleteWorkout(workout);
+        var workout = _workoutService.GetWorkout(workoutId);
+        _workoutService.DeleteWorkout(workout);
         
         return Ok();
     }
@@ -56,10 +59,10 @@ public class WorkoutController : ControllerBase
     [HttpGet("GetWorkout/{workoutId}")]
     public ActionResult GetWorkout(Guid workoutId)
     {
-        var workout = WorkoutService.GetWorkout(workoutId);
-        var workoutExercises = WorkoutExerciseService.GetExercisesFromWorkout(workoutId);
-        var exercisesDto = workoutExercises.Select(e => Mapper.Map<WorkoutExerciseDto>(e));
-        var workoutDto = Mapper.Map<ResponseWorkoutDto>(workout);
+        var workout = _workoutService.GetWorkout(workoutId);
+        var workoutExercises = _workoutExerciseService.GetExercisesFromWorkout(workoutId);
+        var exercisesDto = workoutExercises.Select(e => _mapper.Map<WorkoutExerciseDto>(e));
+        var workoutDto = _mapper.Map<ResponseWorkoutDto>(workout);
         workoutDto.Exercises = exercisesDto;
         return Ok(workoutDto);
     }
@@ -68,12 +71,12 @@ public class WorkoutController : ControllerBase
     public ActionResult<IEnumerable<ResponseWorkoutDto>> GetWorkouts()
     {
         var result = new List<ResponseWorkoutDto>();
-        var workouts = WorkoutService.GetWorkouts();
+        var workouts = _workoutService.GetWorkouts();
         foreach (var workout in workouts)
         {
-            var workoutExercises = WorkoutExerciseService.GetExercisesFromWorkout(workout.WorkoutID);
-            var exercisesDto = workoutExercises.Select(e => Mapper.Map<WorkoutExerciseDto>(e));
-            var workoutDto = Mapper.Map<ResponseWorkoutDto>(workout);
+            var workoutExercises = _workoutExerciseService.GetExercisesFromWorkout(workout.WorkoutId);
+            var exercisesDto = workoutExercises.Select(e => _mapper.Map<WorkoutExerciseDto>(e));
+            var workoutDto = _mapper.Map<ResponseWorkoutDto>(workout);
             workoutDto.Exercises = exercisesDto;
             result.Add(workoutDto);
         }

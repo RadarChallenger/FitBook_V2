@@ -10,20 +10,20 @@ namespace FitBook.Controllers;
 [ApiController]
 public class ExerciseController : ControllerBase
 {
-    private readonly IExerciseService ExerciseService;
-    private readonly IMapper Mapper;
+    private readonly IExerciseService _exerciseService;
+    private readonly IMapper _mapper;
 
     public ExerciseController(IExerciseService exerciseService, IMapper mapper)
     {
-        ExerciseService = exerciseService;
-        Mapper = mapper;
+        _exerciseService = exerciseService;
+        _mapper = mapper;
     }
     
     [HttpPost("CreateExercise")]
     public ActionResult CreateExercise([FromBody] CreateExerciseDto newExercise)
     {
-        var exercise = Mapper.Map<Exercise>(newExercise);
-        if (ExerciseService.CreateExercise(exercise))
+        var exercise = _mapper.Map<Exercise>(newExercise);
+        if (_exerciseService.CreateExercise(exercise))
         {
             return Ok();
         }
@@ -36,22 +36,22 @@ public class ExerciseController : ControllerBase
     [HttpDelete("DeleteExercise/{exerciseId}")]
     public ActionResult DeleteExercise(Guid exerciseId)
     {
-        var exercise = ExerciseService.GetExercise(exerciseId);
-        ExerciseService.DeleteExercise(exercise);
+        var exercise = _exerciseService.GetExercise(exerciseId);
+        _exerciseService.DeleteExercise(exercise);
         return Ok();
     }
 
     [HttpGet("GetExercise/{exerciseId}")]
     public ActionResult GetExercise(Guid exerciseId)
     {
-        var exercise = ExerciseService.GetExercise(exerciseId);
-        return Ok(Mapper.Map<RepsonseExerciseDto>(exercise));
+        var exercise = _exerciseService.GetExercise(exerciseId);
+        return Ok(_mapper.Map<ResponseExerciseDto>(exercise));
     }
 
     [HttpGet("GetExercises")]
-    public ActionResult<IEnumerable<RepsonseExerciseDto>> GetExercises()
+    public ActionResult<IEnumerable<ResponseExerciseDto>> GetExercises()
     {
-        var exercises = ExerciseService.GetExercises();
-        return Ok(exercises.Select(exercise => Mapper.Map<RepsonseExerciseDto>(exercise)));
+        var exercises = _exerciseService.GetExercises();
+        return Ok(exercises.Select(exercise => _mapper.Map<ResponseExerciseDto>(exercise)));
     }
 }

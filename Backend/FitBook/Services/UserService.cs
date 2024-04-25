@@ -15,14 +15,14 @@ public class UserService : BaseService, IUserService
         return Context.Users.ToList();
     }
 
-    public User GetUser(Guid userID)
+    public User GetUser(Guid userId)
     {
-        return Context.Users.Where(u => u.UserID == userID).FirstOrDefault();
+        return Context.Users.First(u => u.UserId == userId);
     }
 
     public bool CreateUser(User newUser)
     {
-        newUser.UserID = Guid.NewGuid();
+        newUser.UserId = Guid.NewGuid();
         Context.Add(newUser);
         return Save();
     }

@@ -15,14 +15,14 @@ public class WorkoutService : BaseService, IWorkoutService
         return Context.Workouts.ToList();
     }
 
-    public Workout GetWorkout(Guid workoutID)
+    public Workout GetWorkout(Guid workoutId)
     {
-        return Context.Workouts.FirstOrDefault(w => w.WorkoutID == workoutID);
+        return Context.Workouts.First(w => w.WorkoutId == workoutId);
     }
 
     public bool CreateWorkout(Workout newWorkout, Guid id)
     {
-        newWorkout.WorkoutID = id;
+        newWorkout.WorkoutId = id;
         Context.Add(newWorkout);
         return Save();
     }

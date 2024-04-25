@@ -15,14 +15,14 @@ public class ExerciseService : BaseService, IExerciseService
         return Context.Exercises.ToList();
     }
 
-    public Exercise GetExercise(Guid exerciseID)
+    public Exercise GetExercise(Guid exerciseId)
     {
-        return Context.Exercises.FirstOrDefault(e => e.ExerciseID == exerciseID);
+        return Context.Exercises.First(e => e.ExerciseId == exerciseId);
     }
 
     public bool CreateExercise(Exercise newExercise)
     {
-        newExercise.ExerciseID = Guid.NewGuid();
+        newExercise.ExerciseId = Guid.NewGuid();
         Context.Add(newExercise);
         return Save();
     }

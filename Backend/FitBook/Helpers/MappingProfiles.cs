@@ -11,7 +11,7 @@ public class MappingProfiles : Profile
         CreateMap<User, ResponseUserDto>();
         CreateMap<CreateUserDto, User>();
         CreateMap<CreateExerciseDto, Exercise>();
-        CreateMap<Exercise, RepsonseExerciseDto>();
+        CreateMap<Exercise, ResponseExerciseDto>();
         CreateMap<Exercise, ResponseUserDto>();
         CreateMap<WorkoutExerciseDto, WorkoutExercise>();
         CreateMap<WorkoutExercise, WorkoutExerciseDto>();

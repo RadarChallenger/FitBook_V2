@@ -15,19 +15,19 @@ public class WorkoutExerciseService : BaseService, IWorkoutExerciseService
         return Context.WorkoutExercises.ToList();
     }
 
-    public WorkoutExercise GetWorkoutExercise(Guid workoutExerciseID)
+    public WorkoutExercise GetWorkoutExercise(Guid workoutExerciseId)
     {
-        return Context.WorkoutExercises.FirstOrDefault(we => we.WorkoutExerciseID == workoutExerciseID);
+        return Context.WorkoutExercises.First(we => we.WorkoutExerciseId == workoutExerciseId);
     }
 
-    public ICollection<WorkoutExercise> GetExercisesFromWorkout(Guid workoutID)
+    public ICollection<WorkoutExercise> GetExercisesFromWorkout(Guid workoutId)
     {
-        return Context.WorkoutExercises.Where(we => we.WorkoutID == workoutID).ToList();
+        return Context.WorkoutExercises.Where(we => we.WorkoutId == workoutId).ToList();
     }
 
     public bool CreateWorkoutExercise(WorkoutExercise newWorkoutExercise)
     {
-        newWorkoutExercise.WorkoutExerciseID = Guid.NewGuid();
+        newWorkoutExercise.WorkoutExerciseId = Guid.NewGuid();
         Context.Add(newWorkoutExercise);
         return Save();
     }
